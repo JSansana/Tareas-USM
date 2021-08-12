@@ -1,0 +1,195 @@
+service: API-Entrega-4
+
+frameworkVersion: '2'
+
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  lambdaHashingVersion: '20201221'
+  region: sa-east-1
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - dynamodb:DescribeTable
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource: "arn:aws:dynamodb:*:*"
+
+resources:
+  Resources:
+    tablaMaquinas:
+      Type: 'AWS::DynamoDB::Table'
+      DeletionPolicy: Retain
+      Properties:
+        TableName: Maquina
+        AttributeDefinitions:
+          - AttributeName: idMaquina
+            AttributeType: S
+        KeySchema:
+          - AttributeName: idMaquina
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1 #Investigar
+          WriteCapacityUnits: 1
+    tablaHabilitacion:
+      Type: 'AWS::DynamoDB::Table'
+      DeletionPolicy: Retain
+      Properties:
+        TableName: Habilitacion
+        AttributeDefinitions:
+          - AttributeName: idHabilitacion
+            AttributeType: S
+        KeySchema:
+          - AttributeName: idHabilitacion
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1 #Investigar
+          WriteCapacityUnits: 1
+    tablaRecurso:
+      Type: 'AWS::DynamoDB::Table'
+      DeletionPolicy: Retain
+      Properties:
+        TableName: Recurso
+        AttributeDefinitions:
+          - AttributeName: idRecurso
+            AttributeType: S
+        KeySchema:
+          - AttributeName: idRecurso
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1 #Investigar
+          WriteCapacityUnits: 1
+
+functions:
+  postRecursos:
+    handler: handler/post_recursos.postRecursos
+    events:
+      - http:
+          path: Recursos/Add
+          method: post
+          cors: true
+          request:
+            parameters:
+              querystrings:
+                tipoDeMaquina: true
+                url: true
+  postMaquinas:
+    handler: handler/post_maquinas.postMaquinas
+    events:
+      - http:
+          path: Maquina/Add
+          method: post
+          cors: true
+          request:
+            parameters:
+              querystrings:
+                tipoDeMaquina: true
+                nombre: true
+                ubicacion: true
+  getMaquinas:
+    handler: handler/get_maquinas.getMaquinas
+    events:
+      - http:
+          path: Maquina/Search
+          method: get
+          cors: true
+  delMaquinas:
+    handler: handler/delete_maquinas.deleteMaquinas
+    events:
+      - http:
+          path: Maquina/Delete
+          method: delete
+          cors: true
+          request:
+            parameters:
+              querystrings:
+                idMaquina: true
+  getRecurso:
+    handler: handler/get_recurso.getUrls
+    events:
+      - http:
+          path: /Recursos/{tipoDeMaquina}
+          method: get
+          cors: true
+
+  delRecursos:
+    handler: handler/delete_recurso.deleteRecursos
+    events:
+      - http:
+          path: /Recursos/Delete/
+          method: delete
+          cors: true
+          request:
+            parameters:
+              querystrings:
+                idRecurso: true
+
+  postHabilitacion:
+    handler: handler/post_habilitacion.postHabilitacion
+    events:
+      - http:
+          path: Habilitacion/Add
+          method: post
+          cors: true
+          request:
+            parameters:
+              querystrings:
+                idMaker: true
+                tipoDeMaquina: true
+                Habilitado: true
+  putPersona:
+    handler: handler/put_persona_habilitada.putPersonaH
+    events:
+      - http:
+          path: Habilitacion/Update/
+          method: put
+          cors: true
+          request:
+            parameters:
+              querystrings:
+                idHabilitacion: true
+                idMaker: true
+                tipoDeMaquina: true
+                Habilitado: true
+  getHabilitacion:
+    handler: handler/get_habilitacion.getHabilitacion
+    events:
+      - http:
+          path: Habilitacion/Search
+          method: get
+          cors: true
+          request:
+            parameters:
+              querystrings:
+                idMaker: true
+                tipoDeMaquina: true
+  
+  getSiHabilitados:
+    handler: handler/get_si_habilitado.getSiHabilitados
+    events:
+      - http:
+          path: /Habilitacion/Si
+          method: get
+          cors: true
+          request:
+            parameters:
+              querystrings:
+                tipoDeMaquina: true
+
+  getNoHabilitados:
+    handler: handler/get_no_habilitado.getNoHabilitados
+    events:
+      - http:
+          path: /Habilitacion/No
+          method: get
+          cors: true
+          request:
+            parameters:
+              querystrings:
+                tipoDeMaquina: true
+
