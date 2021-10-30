@@ -4,9 +4,10 @@ import (
 	"context"
 	"log"
 	"math/rand"
-	pb "modulo/gRPC/proto"
 	"net"
 	"time"
+
+	pb "github.com/jsansana/Tareas-USM/SD/proto"
 
 	"google.golang.org/grpc"
 )

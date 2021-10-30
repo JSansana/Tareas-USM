@@ -4,8 +4,9 @@ package main
 import (
 	"context"
 	"log"
-	pb "modulo/gRPC/proto"
 	"time"
+
+	pb "github.com/jsansana/Tareas-USM/SD/proto"
 
 	"google.golang.org/grpc"
 )
