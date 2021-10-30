@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+package proto;
+
+//option go_package = "Desktop/test/proto";
+option go_package = "modulo/gRPC;gRPC";
+
+
+message SolicitudParticipacion {
+    // Participacion = 1 representa que se encuentra en la primera posición ,
+    //Si hubieran dos campos, el segundo sería = 2 ya que está en 2da posición 
+    int32 Participacion = 1;
+
+}
+
+message RespuestaLider{
+    // Respuesta = 1 representa que se encuentra en la primera posición
+    int32 Respuesta = 1;
+
+}
+
+message EnvioJugada {
+
+    string Jugada = 1;
+}
+
+//Servicio de comunicación de los jugadores con el lider 
+service ComunicacionJL {
+
+    // rpc GetRespuesta(Request del cliente) returns (respuesta del servidor)
+    rpc GetRespuesta(SolicitudParticipacion) returns (RespuestaLider);
+
+    //rpc GetJugada(EnvioJugada) returns (RespuestaLider);
+
+}
+
